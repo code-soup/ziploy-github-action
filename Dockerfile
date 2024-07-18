@@ -1,4 +1,4 @@
-FROM codesoup/pumpkin:latest
+FROM codesoup/pumpkin:amd64
 
 MAINTAINER Vlado Bosnjak <hi@codesoup.co>
 

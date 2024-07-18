@@ -1,7 +1,7 @@
 # action.yml
 name: "Ziploy"
-icon: "archive"
-color: "green"
+#icon: "archive"
+#color: "green"
 description: "Deploy WordPress Theme or Plugin directly from github to any hosting"
 inputs:
     ziploy-id: # id of ziploy

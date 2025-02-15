@@ -1,17 +1,17 @@
 # Ziploy Github Action
 
-Automate deployment of your WordPress projects from Github to any hosting via Ziploy.
+Automate deployment of your WordPress projects from Github to any hosting with Ziploy.
 
 ## Includes
 
--   Ubuntu 22.04.5 LTS
--   PHP 8.3.16
--   Composer 2.2.6
--   Node v23.8.0
+-   Ubuntu 24.04 Minimal
+-   PHP 8.4.16
+-   Composer 2.8.5
+-   Node v23.7.0
 -   NPM 10.9.2
 -   yarn 1.22.22
--   git 2.34.1
--   curl 7.81.0
+-   git 2.43
+-   curl 8.5.0
 
 ## Variables
 

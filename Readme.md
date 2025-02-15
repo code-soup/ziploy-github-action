@@ -4,11 +4,11 @@ Automate deployment of your WordPress projects from Github to any hosting via Zi
 
 ## Includes
 
--   Ubuntu 22.04
--   PHP 8.3.9
+-   Ubuntu 22.04.5 LTS
+-   PHP 8.3.16
 -   Composer 2.2.6
--   Node v22.4.1
--   NPM 10.8.2
+-   Node v23.8.0
+-   NPM 10.9.2
 -   yarn 1.22.22
 -   git 2.34.1
 -   curl 7.81.0

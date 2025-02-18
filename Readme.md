@@ -5,13 +5,14 @@ Automate deployment of your WordPress projects from Github to any hosting with Z
 ## Includes
 
 -   Ubuntu 24.04 Minimal
--   PHP 8.4.16
+-   PHP 8.3.6
+-   Python 3.12.3
+-   git 2.43.0
+-   curl 8.5.0
 -   Composer 2.8.5
 -   Node v23.7.0
 -   NPM 10.9.2
 -   yarn 1.22.22
--   git 2.43
--   curl 8.5.0
 
 ## Variables
 

@@ -24,31 +24,28 @@ setup_env() {
 
 setup_ssh_dir() {
     if [ "$ZIPLOY_MODE" = "SSH" ]; then
-        echo "Setting up SSH"
+        echo "Setting up SSH with Ed25519 Key"
 
         SSH_PATH="${HOME}/.ssh"
+        mkdir -p "${SSH_PATH}"
+        chmod 700 "${SSH_PATH}"
 
-        # Create SSH directory if not exists
-        if [ ! -d "${SSH_PATH}" ]; then
-            mkdir -p "${SSH_PATH}/ctl/"
-            chmod 700 "${SSH_PATH}"
+        ZIPLOY_SSH_KEY_PATH="${SSH_PATH}/ziploy_id_ed25519"
+        echo "$ZIPLOY_SSH_KEY" > "$ZIPLOY_SSH_KEY_PATH"
+        chmod 600 "$ZIPLOY_SSH_KEY_PATH"
+
+        if [ ! -s "$ZIPLOY_SSH_KEY_PATH" ]; then
+            echo "❌ ERROR: SSH key file is empty or not created!"
+            exit 1
         fi
 
-        # Copy secret key to container
-        ZIPLOY_SSH_KEY_PATH="${SSH_PATH}/ziploy_id_rsa"
-        umask 077
-        echo "${SSH_KEY}" > "${ZIPLOY_SSH_KEY_PATH}"
-        chmod 600 "${ZIPLOY_SSH_KEY_PATH}"
-
-        # Establish known_hosts
         KNOWN_HOSTS_PATH="${SSH_PATH}/known_hosts"
-        ssh-keyscan -t rsa "${SSH_HOST}" >> "${KNOWN_HOSTS_PATH}"
-        chmod 644 "${KNOWN_HOSTS_PATH}"
+        ssh-keyscan -t ed25519 "$ZIPLOY_SSH_HOST" >> "$KNOWN_HOSTS_PATH"
+        chmod 644 "$KNOWN_HOSTS_PATH"
 
-        # Configure SSH for key-based authentication
         export SSH_AUTH_SOCK="${SSH_PATH}/ssh-agent.sock"
         eval "$(ssh-agent -a ${SSH_AUTH_SOCK})"
-        ssh-add "${ZIPLOY_SSH_KEY_PATH}"
+        ssh-add "$ZIPLOY_SSH_KEY_PATH"
     fi
 }
 

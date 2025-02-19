@@ -14,6 +14,10 @@ inputs:
         description: "Ziploy ID"
         required: true
 
+    ziploy-host:
+        description: "Ziploy Origin"
+        required: true
+
     ziploy-ssh-host:
         description: "SSH Host"
         required: true
@@ -37,6 +41,7 @@ runs:
     env:
         ZIPLOY_MODE: ${{ inputs.ziploy-mode }}
         ZIPLOY_ID: ${{ inputs.ziploy-id }}
+        ZIPLOY_HOST: ${{ inputs.ziploy-host }}
         ZIPLOY_SSH_HOST: ${{ inputs.ziploy-ssh-host }}
         ZIPLOY_SSH_USER: ${{ inputs.ziploy-ssh-user }}
         ZIPLOY_SSH_PORT: ${{ inputs.ziploy-ssh-port }}
@@ -44,6 +49,7 @@ runs:
     args:
         - ${{ inputs.ziploy-mode }}
         - ${{ inputs.ziploy-id }}
+        - ${{ inputs.ziploy-host }}
         - ${{ inputs.ziploy-ssh-host }}
         - ${{ inputs.ziploy-ssh-user }}
         - ${{ inputs.ziploy-ssh-port }}

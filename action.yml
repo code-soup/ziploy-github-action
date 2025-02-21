@@ -5,7 +5,7 @@ color: "green"
 description: "Deploy WordPress Theme or Plugin directly from GitHub to any hosting"
 
 inputs:
-    ziploy-mode:
+    ziploy-method:
         description: "Deployment mode (SSH, FTP, JWT)"
         required: false
         default: "SSH"
@@ -39,7 +39,7 @@ runs:
     using: "docker"
     image: "Dockerfile"
     env:
-        ZIPLOY_MODE: ${{ inputs.ziploy-mode }}
+        ZIPLOY_METHOD: ${{ inputs.ziploy-method }}
         ZIPLOY_ID: ${{ inputs.ziploy-id }}
         ZIPLOY_HOST: ${{ inputs.ziploy-host }}
         ZIPLOY_SSH_HOST: ${{ inputs.ziploy-ssh-host }}
@@ -47,7 +47,7 @@ runs:
         ZIPLOY_SSH_PORT: ${{ inputs.ziploy-ssh-port }}
         ZIPLOY_SSH_KEY: ${{ inputs.ziploy-ssh-key }}
     args:
-        - ${{ inputs.ziploy-mode }}
+        - ${{ inputs.ziploy-method }}
         - ${{ inputs.ziploy-id }}
         - ${{ inputs.ziploy-host }}
         - ${{ inputs.ziploy-ssh-host }}

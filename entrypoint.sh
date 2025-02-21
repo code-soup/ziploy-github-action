@@ -5,22 +5,22 @@ validate_inputs() {
     ERRORS=""
 
     # Check required variables
-    [ -z "$ZIPLOY_MODE" ] && ERRORS="${ERRORS}\n❌ ZIPLOY_MODE is required (Valid values: SSH, FTP, JWT)"
+    [ -z "$ZIPLOY_METHOD" ] && ERRORS="${ERRORS}\n❌ ZIPLOY_METHOD is required (Valid values: SSH, FTP, JWT)"
     [ -z "$ZIPLOY_ID" ] && ERRORS="${ERRORS}\n❌ ZIPLOY_ID is required"
     [ -z "$ZIPLOY_HOST" ] && ERRORS="${ERRORS}\n❌ ZIPLOY_HOST is required"
     
     # SSH-specific validations
-    if [ "$ZIPLOY_MODE" = "SSH" ]; then
+    if [ "$ZIPLOY_METHOD" = "SSH" ]; then
         [ -z "$ZIPLOY_SSH_HOST" ] && ERRORS="${ERRORS}\n❌ ZIPLOY_SSH_HOST is required for SSH mode"
         [ -z "$ZIPLOY_SSH_USER" ] && ERRORS="${ERRORS}\n❌ ZIPLOY_SSH_USER is required for SSH mode"
         [ -z "$ZIPLOY_SSH_PORT" ] && ZIPLOY_SSH_PORT=22  # Default to 22 if not provided
         [ -z "$ZIPLOY_SSH_KEY" ] && ERRORS="${ERRORS}\n❌ ZIPLOY_SSH_KEY is required for SSH mode"
     fi
 
-    # Validate ZIPLOY_MODE values
-    case "$ZIPLOY_MODE" in
+    # Validate ZIPLOY_METHOD values
+    case "$ZIPLOY_METHOD" in
         SSH|FTP|JWT) ;;  # Valid values
-        *) ERRORS="${ERRORS}\n❌ ZIPLOY_MODE must be SSH, FTP, or JWT";;
+        *) ERRORS="${ERRORS}\n❌ ZIPLOY_METHOD must be SSH, FTP, or JWT";;
     esac
 
     # Display errors and exit if any validation failed
@@ -38,11 +38,11 @@ curl -o ziploy https://raw.githubusercontent.com/code-soup/ziploy-cli/master/zip
 chmod u+x ./ziploy
 
 setup_env() {
-    ZIPLOY_MODE="${ZIPLOY_MODE:-SSH}"
+    ZIPLOY_METHOD="${ZIPLOY_METHOD:-SSH}"
     ZIPLOY_ID="${ZIPLOY_ID}"
     ZIPLOY_HOST="${ZIPLOY_HOST}"
     
-    if [ "$ZIPLOY_MODE" = "SSH" ]; then
+    if [ "$ZIPLOY_METHOD" = "SSH" ]; then
         SSH_HOST="${ZIPLOY_SSH_HOST}"
         SSH_USER="${ZIPLOY_SSH_USER}"
         SSH_PORT="${ZIPLOY_SSH_PORT:-22}"
@@ -51,7 +51,7 @@ setup_env() {
 }
 
 setup_ssh_dir() {
-    if [ "$ZIPLOY_MODE" = "SSH" ]; then
+    if [ "$ZIPLOY_METHOD" = "SSH" ]; then
         echo "Setting up SSH with Ed25519 Key"
 
         SSH_PATH="${HOME}/.ssh"
@@ -78,22 +78,22 @@ setup_ssh_dir() {
 }
 
 run_ziploy() {
-    echo "✅ Running Ziploy with mode: ${ZIPLOY_MODE}"
+    echo "✅ Running Ziploy with mode: ${ZIPLOY_METHOD}"
 
-    if [ "$ZIPLOY_MODE" = "SSH" ]; then
+    if [ "$ZIPLOY_METHOD" = "SSH" ]; then
         # Construct SSH connection string
         SSH_CONNECTION="${SSH_USER}@${SSH_HOST} -p ${SSH_PORT}"
 
         # Run Ziploy CLI for SSH
-        ./ziploy "${ZIPLOY_ID}" "${ZIPLOY_HOST}" "${ZIPLOY_MODE}" "${SSH_CONNECTION}" "${ZIPLOY_SSH_KEY_PATH}"
+        ./ziploy "${ZIPLOY_ID}" "${ZIPLOY_HOST}" "${ZIPLOY_METHOD}" "${ZIPLOY_SSH_USER}" "${SSH_CONNECTION}" "${ZIPLOY_SSH_KEY_PATH}"
     
-    elif [ "$ZIPLOY_MODE" = "JWT" ]; then
+    elif [ "$ZIPLOY_METHOD" = "JWT" ]; then
         # Run Ziploy CLI for REST API (JWT Mode)
-        ./ziploy "${ZIPLOY_MODE}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}"
+        ./ziploy "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}"
 
-    elif [ "$ZIPLOY_MODE" = "FTP" ]; then
+    elif [ "$ZIPLOY_METHOD" = "FTP" ]; then
         # Run Ziploy CLI for FTP
-        ./ziploy "${ZIPLOY_MODE}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}"
+        ./ziploy "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}"
     fi
 }
 

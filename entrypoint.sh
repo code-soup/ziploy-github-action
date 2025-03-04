@@ -31,12 +31,6 @@ validate_inputs() {
     fi
 }
 
-# Download latest CLI
-curl -o ziploy https://raw.githubusercontent.com/code-soup/ziploy-cli/master/ziploy
-
-# Make executable
-chmod u+x ./ziploy
-
 setup_env() {
     ZIPLOY_METHOD="${ZIPLOY_METHOD:-SSH}"
     ZIPLOY_ID="${ZIPLOY_ID}"
@@ -78,6 +72,12 @@ setup_ssh_dir() {
 }
 
 run_ziploy() {
+    # Download latest CLI
+    curl -o ziploy-cli https://raw.githubusercontent.com/code-soup/ziploy-cli/master/dist/ziploy-cli
+
+    # Make executable
+    chmod u+x ./ziploy-cli
+
     echo "✅ Running Ziploy with mode: ${ZIPLOY_METHOD}"
 
     if [ "$ZIPLOY_METHOD" = "SSH" ]; then
@@ -85,15 +85,15 @@ run_ziploy() {
         SSH_CONNECTION="${SSH_USER}@${SSH_HOST} -p ${SSH_PORT}"
 
         # Run Ziploy CLI for SSH
-        ./ziploy "${ZIPLOY_ID}" "${ZIPLOY_HOST}" "${ZIPLOY_METHOD}" "${ZIPLOY_SSH_USER}" "${SSH_CONNECTION}" "${ZIPLOY_SSH_KEY_PATH}"
+        ./ziploy-cli "${ZIPLOY_ID}" "${ZIPLOY_HOST}" "${ZIPLOY_METHOD}" "${ZIPLOY_SSH_USER}" "${SSH_CONNECTION}" "${ZIPLOY_SSH_KEY_PATH}"
     
     elif [ "$ZIPLOY_METHOD" = "JWT" ]; then
         # Run Ziploy CLI for REST API (JWT Mode)
-        ./ziploy "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}"
+        ./ziploy-cli "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}"
 
     elif [ "$ZIPLOY_METHOD" = "FTP" ]; then
         # Run Ziploy CLI for FTP
-        ./ziploy "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}"
+        ./ziploy-cli "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}"
     fi
 }
 

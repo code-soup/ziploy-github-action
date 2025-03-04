@@ -82,7 +82,7 @@ run_ziploy() {
 
     if [ "$ZIPLOY_METHOD" = "SSH" ]; then
         # Run Ziploy CLI for SSH
-        ./ziploy-cli "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}" "${SSH_USER}" "${SSH_HOST}" "${SSH_PORT}" "${ZIPLOY_SSH_KEY_PATH}"
+        ./ziploy-cli "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}" "${SSH_USER}" "${SSH_HOST}" "${SSH_PORT}" "~/.ssh/ziploy_id_ed25519"
     
     elif [ "$ZIPLOY_METHOD" = "JWT" ]; then
         # Run Ziploy CLI for REST API (JWT Mode)

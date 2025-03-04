@@ -53,7 +53,8 @@ setup_ssh_dir() {
         chmod 700 "${SSH_PATH}"
 
         ZIPLOY_SSH_KEY_PATH="${SSH_PATH}/ziploy_id_ed25519"
-        echo "$ZIPLOY_SSH_KEY" > "$ZIPLOY_SSH_KEY_PATH"
+        # Use printf to correctly preserve key formatting and newlines
+        printf "%s\n" "$ZIPLOY_SSH_KEY" > "$ZIPLOY_SSH_KEY_PATH"
         chmod 600 "$ZIPLOY_SSH_KEY_PATH"
 
         if [ ! -s "$ZIPLOY_SSH_KEY_PATH" ]; then
@@ -62,14 +63,25 @@ setup_ssh_dir() {
         fi
 
         KNOWN_HOSTS_PATH="${SSH_PATH}/known_hosts"
-        ssh-keyscan -t ed25519 "$ZIPLOY_SSH_HOST" >> "$KNOWN_HOSTS_PATH"
+        # Scan and add the host key for the remote host to avoid host key verification issues
+        ssh-keyscan -t ed25519 "$ZIPLOY_SSH_HOST" >> "$KNOWN_HOSTS_PATH" 2>/dev/null
         chmod 644 "$KNOWN_HOSTS_PATH"
 
+        # Optionally, create an SSH config file to disable strict host key checking globally
+        CONFIG_PATH="${SSH_PATH}/config"
+        cat > "$CONFIG_PATH" <<EOF
+Host *
+    StrictHostKeyChecking no
+EOF
+        chmod 600 "$CONFIG_PATH"
+
+        # Start ssh-agent and add the SSH key
         export SSH_AUTH_SOCK="${SSH_PATH}/ssh-agent.sock"
-        eval "$(ssh-agent -a ${SSH_AUTH_SOCK})"
+        eval "$(ssh-agent -a "${SSH_AUTH_SOCK}")"
         ssh-add "$ZIPLOY_SSH_KEY_PATH"
     fi
 }
+
 
 run_ziploy() {
     # Download latest CLI
@@ -82,7 +94,7 @@ run_ziploy() {
 
     if [ "$ZIPLOY_METHOD" = "SSH" ]; then
         # Run Ziploy CLI for SSH
-        ./ziploy-cli "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}" "${SSH_USER}" "${SSH_HOST}" "${SSH_PORT}" "~/.ssh/ziploy_id_ed25519"
+        ./ziploy-cli "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}" "${SSH_USER}" "${SSH_HOST}" "${SSH_PORT}" "${ZIPLOY_SSH_KEY_PATH}"
     
     elif [ "$ZIPLOY_METHOD" = "JWT" ]; then
         # Run Ziploy CLI for REST API (JWT Mode)

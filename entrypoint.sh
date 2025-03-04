@@ -44,6 +44,7 @@ setup_env() {
     fi
 }
 
+
 setup_ssh_dir() {
     if [ "$ZIPLOY_METHOD" = "SSH" ]; then
         echo "Setting up SSH with Ed25519 Key"
@@ -53,7 +54,6 @@ setup_ssh_dir() {
         chmod 700 "${SSH_PATH}"
 
         ZIPLOY_SSH_KEY_PATH="${SSH_PATH}/ziploy_id_ed25519"
-        # Use printf to correctly preserve key formatting and newlines
         printf "%s\n" "$ZIPLOY_SSH_KEY" > "$ZIPLOY_SSH_KEY_PATH"
         chmod 600 "$ZIPLOY_SSH_KEY_PATH"
 
@@ -63,21 +63,11 @@ setup_ssh_dir() {
         fi
 
         KNOWN_HOSTS_PATH="${SSH_PATH}/known_hosts"
-        # Scan and add the host key for the remote host to avoid host key verification issues
-        ssh-keyscan -t ed25519 "$ZIPLOY_SSH_HOST" >> "$KNOWN_HOSTS_PATH" 2>/dev/null
+        ssh-keyscan -t ed25519 "$ZIPLOY_SSH_HOST" >> "$KNOWN_HOSTS_PATH"
         chmod 644 "$KNOWN_HOSTS_PATH"
 
-        # Optionally, create an SSH config file to disable strict host key checking globally
-        CONFIG_PATH="${SSH_PATH}/config"
-        cat > "$CONFIG_PATH" <<EOF
-Host *
-    StrictHostKeyChecking no
-EOF
-        chmod 600 "$CONFIG_PATH"
-
-        # Start ssh-agent and add the SSH key
         export SSH_AUTH_SOCK="${SSH_PATH}/ssh-agent.sock"
-        eval "$(ssh-agent -a "${SSH_AUTH_SOCK}")"
+        eval "$(ssh-agent -a ${SSH_AUTH_SOCK})"
         ssh-add "$ZIPLOY_SSH_KEY_PATH"
     fi
 }

@@ -73,7 +73,7 @@ setup_ssh_dir() {
 
 run_ziploy() {
     # Download latest CLI
-    curl -o ziploy-cli https://raw.githubusercontent.com/code-soup/ziploy-cli/master/dist/ziploy-cli
+    curl -o ziploy-cli https://raw.githubusercontent.com/code-soup/ziploy-cli/master/dist/x86_64/ziploy-cli
 
     # Make executable
     chmod u+x ./ziploy-cli

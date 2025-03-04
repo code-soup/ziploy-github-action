@@ -81,11 +81,8 @@ run_ziploy() {
     echo "✅ Running Ziploy with mode: ${ZIPLOY_METHOD}"
 
     if [ "$ZIPLOY_METHOD" = "SSH" ]; then
-        # Construct SSH connection string
-        SSH_CONNECTION="${SSH_USER}@${SSH_HOST} -p ${SSH_PORT}"
-
         # Run Ziploy CLI for SSH
-        ./ziploy-cli "${ZIPLOY_ID}" "${ZIPLOY_HOST}" "${ZIPLOY_METHOD}" "${ZIPLOY_SSH_USER}" "${SSH_CONNECTION}" "${ZIPLOY_SSH_KEY_PATH}"
+        ./ziploy-cli "${ZIPLOY_METHOD}" "${ZIPLOY_ID}" "${ZIPLOY_HOST}" "${SSH_USER}" "${SSH_HOST}" "${SSH_PORT}" "${ZIPLOY_SSH_KEY_PATH}"
     
     elif [ "$ZIPLOY_METHOD" = "JWT" ]; then
         # Run Ziploy CLI for REST API (JWT Mode)

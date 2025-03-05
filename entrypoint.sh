@@ -44,7 +44,6 @@ setup_env() {
     fi
 }
 
-
 setup_ssh_dir() {
     if [ "$ZIPLOY_METHOD" = "SSH" ]; then
         echo "Setting up SSH with Ed25519 Key"
@@ -54,6 +53,7 @@ setup_ssh_dir() {
         chmod 700 "${SSH_PATH}"
 
         ZIPLOY_SSH_KEY_PATH="${SSH_PATH}/ziploy_id_ed25519"
+        # Write the provided SSH key to the file
         printf "%s\n" "$ZIPLOY_SSH_KEY" > "$ZIPLOY_SSH_KEY_PATH"
         chmod 600 "$ZIPLOY_SSH_KEY_PATH"
 
@@ -62,16 +62,43 @@ setup_ssh_dir() {
             exit 1
         fi
 
+        # Create known_hosts file in the same directory as the private key.
         KNOWN_HOSTS_PATH="${SSH_PATH}/known_hosts"
+        # Remove any existing known_hosts
+        if [ -f "$KNOWN_HOSTS_PATH" ]; then
+            rm "$KNOWN_HOSTS_PATH"
+            echo "Deleted existing known_hosts file at $KNOWN_HOSTS_PATH"
+        fi
+        # Run ssh-keyscan and write its output to known_hosts
         ssh-keyscan -t ed25519 "$ZIPLOY_SSH_HOST" >> "$KNOWN_HOSTS_PATH"
         chmod 644 "$KNOWN_HOSTS_PATH"
+        echo "Created new known_hosts file at $KNOWN_HOSTS_PATH"
 
+        # Start SSH agent
         export SSH_AUTH_SOCK="${SSH_PATH}/ssh-agent.sock"
         eval "$(ssh-agent -a ${SSH_AUTH_SOCK})"
         ssh-add "$ZIPLOY_SSH_KEY_PATH"
+
+        # Test the SSH connection (this will also be optionally shown below)
+        echo "Testing SSH connection..."
+        ssh -o StrictHostKeyChecking=no -i "$ZIPLOY_SSH_KEY_PATH" -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "echo 'Connection Successful'" > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            echo "❌ SSH connection test failed!"
+            exit 1
+        else
+            echo "✅ SSH connection test succeeded."
+        fi
+
+        # If test mode is enabled, show the known_hosts file and exit
+        if [ "$TEST_SSH" = "true" ]; then
+            echo "----- Known Hosts File -----"
+            cat "$KNOWN_HOSTS_PATH"
+            echo "----------------------------"
+            echo "Test SSH mode enabled. Exiting without running Ziploy."
+            exit 0
+        fi
     fi
 }
-
 
 run_ziploy() {
     # Download latest CLI
@@ -97,7 +124,7 @@ run_ziploy() {
 }
 
 # Execute functions
-validate_inputs  # Validate inputs first
+validate_inputs    # Validate inputs first
 setup_env
 setup_ssh_dir
 run_ziploy

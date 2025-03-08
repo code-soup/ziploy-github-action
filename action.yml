@@ -1,0 +1,18 @@
+# action.yml
+name: "Ziploy"
+icon: "archive"
+color: "green"
+description: "Deploy WordPress Theme or Plugin directly from GitHub to any hosting"
+
+inputs:
+    ziploy-ssh-key:
+        description: "SSH Private Key"
+        required: true
+
+runs:
+    using: "docker"
+    image: "Dockerfile"
+    env:
+        ZIPLOY_SSH_KEY: ${{ inputs.ziploy-ssh-key }}
+    args:
+        - ${{ inputs.ziploy-ssh-key }}

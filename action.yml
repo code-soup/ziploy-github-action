@@ -20,7 +20,7 @@ runs:
     image: "Dockerfile"
     env:
         ZIPLOY_SSH_KEY: ${{ inputs.ziploy-ssh-key }}
-        ZIPLOY_WORKING_DIRECTORY: ${{ inputs.working-directory }}
+        ZIPLOY_WORKING_DIRECTORY: ${{ inputs.ziploy-working-directory }}
     args:
         - ${{ inputs.ziploy-ssh-key }}
-        - ${{ inputs.working-directory }}
+        - ${{ inputs.ziploy-working-directory }}

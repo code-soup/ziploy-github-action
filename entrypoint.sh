@@ -1,8 +1,14 @@
 #!/bin/sh -l
 
-# Load configuration from .ziployconfig file.
+# Load configuration from the .ziployconfig file.
 load_config() {
-    CONFIG_FILE=".ziployconfig"
+    if [ -n "$WORKING_DIRECTORY" ]; then
+        # Strip any leading and trailing slashes from WORKING_DIRECTORY.
+        STRIPPED_WORKING_DIRECTORY=$(echo "$WORKING_DIRECTORY" | sed 's|^/*||; s|/*$||')
+        CONFIG_FILE="${STRIPPED_WORKING_DIRECTORY}/.ziployconfig"
+    else
+        CONFIG_FILE=".ziployconfig"
+    fi
 
     if [ ! -f "$CONFIG_FILE" ]; then
         echo "$CONFIG_FILE not found" >&2
@@ -60,8 +66,8 @@ setup_ssh_dir() {
         ssh-add "$ZIPLOY_SSH_KEY_PATH"
         
         # Append the SSH key and known_hosts paths to the configuration file.
-        echo "ssh-key = ${ZIPLOY_SSH_KEY_PATH}" >> .ziployconfig
-        echo "ssh-known-hosts = ${KNOWN_HOSTS_PATH}" >> .ziployconfig
+        echo "ssh-key = ${ZIPLOY_SSH_KEY_PATH}" >> "$CONFIG_FILE"
+        echo "ssh-known-hosts = ${KNOWN_HOSTS_PATH}" >> "$CONFIG_FILE"
     fi
 }
 
@@ -83,7 +89,5 @@ run_ziploy() {
 
 # Execute the steps.
 load_config
-
 setup_ssh_dir
-
 run_ziploy

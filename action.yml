@@ -11,10 +11,16 @@ inputs:
         description: "SSH Private Key"
         required: true
 
+    working-directory:
+        description: "Path to working directory if it's different from git root directory"
+        required: false
+
 runs:
     using: "docker"
     image: "Dockerfile"
     env:
         ZIPLOY_SSH_KEY: ${{ inputs.ziploy-ssh-key }}
+        WORKING_DIRECTORY: ${{ inputs.working-directory }}
     args:
         - ${{ inputs.ziploy-ssh-key }}
+        - ${{ inputs.working-directory }}

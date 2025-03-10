@@ -10,7 +10,7 @@ load_config() {
         CONFIG_FILE="${STRIPPED_WORKING_DIRECTORY}/.ziployconfig"
 
         # Append the working-directory key (followed by a new line) to the config file.
-        printf "\nworking-directory = %s\n" "$STRIPPED_WORKING_DIRECTORY" >> "$CONFIG_FILE"
+        # printf "\nworking-directory = %s\n" "$STRIPPED_WORKING_DIRECTORY" >> "$CONFIG_FILE"
     else
         CONFIG_FILE=".ziployconfig"
     fi

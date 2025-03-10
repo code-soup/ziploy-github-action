@@ -1,13 +1,16 @@
 #!/bin/sh -l
 
 # Load configuration from the .ziployconfig file.
-# If WORKING_DIRECTORY is set, the script uses the .ziployconfig file within that directory
-# and prepends the "working-directory" key to the configuration file before loading it.
+# If ZIPLOY_WORKING_DIRECTORY is set, the script uses the .ziployconfig file within that directory
+# and prepends the "working-directory" key (with a new line) to the configuration file before loading it.
 load_config() {
     if [ -n "$ZIPLOY_WORKING_DIRECTORY" ]; then
-        # Remove any leading and trailing slashes from WORKING_DIRECTORY inline.
+        # Remove any leading and trailing slashes from ZIPLOY_WORKING_DIRECTORY inline.
         STRIPPED_WORKING_DIRECTORY=$(echo "$ZIPLOY_WORKING_DIRECTORY" | sed 's|^/*||; s|/*$||')
         CONFIG_FILE="${STRIPPED_WORKING_DIRECTORY}/.ziployconfig"
+
+        # Prepend the working-directory key (followed by a new line) to the config file.
+        echo -e "working-directory = ${STRIPPED_WORKING_DIRECTORY}\n" >> "$CONFIG_FILE"
     else
         CONFIG_FILE=".ziployconfig"
     fi
@@ -17,10 +20,10 @@ load_config() {
         exit 1
     fi
 
-    # DEBUG
+    # DEBUG: print the config file path.
     echo "CONFIG_FILE: ${CONFIG_FILE}"
 
-    # Read and parse configuration file line by line.
+    # Read and parse the configuration file line by line.
     while IFS="=" read -r key value; do
         # Remove spaces from the key.
         key=$(echo "$key" | sed 's/ //g')
@@ -40,14 +43,12 @@ load_config() {
         esac
     done < "$CONFIG_FILE"
 
-
-    # DEBUG
+    # DEBUG: print loaded configuration values.
     echo "ZIPLOY_ID: ${ZIPLOY_ID}"
     echo "ZIPLOY_ORIGIN: ${ZIPLOY_ORIGIN}"
     echo "ZIPLOY_METHOD: ${ZIPLOY_METHOD}"
     echo "ZIPLOY_SSH_HOST: ${ZIPLOY_SSH_HOST}"
     echo "ZIPLOY_SSH_USER: ${ZIPLOY_SSH_USER}"
-    echo "ZIPLOY_SSH_PORT: ${ZIPLOY_SSH_PORT}"
     echo "ZIPLOY_SSH_PORT: ${ZIPLOY_SSH_PORT}"
     echo "ZIPLOY_VERBOSE: ${ZIPLOY_VERBOSE}"
     echo "ZIPLOY_WORKING_DIRECTORY: ${ZIPLOY_WORKING_DIRECTORY}"
@@ -62,13 +63,13 @@ setup_ssh_dir() {
         mkdir -p "${SSH_PATH}"
         chmod 700 "${SSH_PATH}"
 
-        # DEBUG
+        # DEBUG: print the SSH directory path.
         echo "SSH_PATH: ${SSH_PATH}"
 
         # Define the file path for the SSH private key.
         ZIPLOY_SSH_KEY_PATH="${SSH_PATH}/ziploy_id_ed25519"
         # Write the SSH key to the file; remove any carriage returns (CR) for compatibility.
-        printf "%s\n" "$ZIPLOY_SSH_KEY" | sed 's/\r//g' > "$ZIPLOY_SSH_KEY_PATH"
+        printf "%s\n" "$SSH_KEY" | sed 's/\r//g' > "$ZIPLOY_SSH_KEY_PATH"
         chmod 600 "$ZIPLOY_SSH_KEY_PATH"
 
         # Verify that the SSH key file was successfully created and is not empty.
@@ -95,8 +96,7 @@ setup_ssh_dir() {
         echo "ssh-key = ${ZIPLOY_SSH_KEY_PATH}" >> "$CONFIG_FILE"
         echo "ssh-known-hosts = ${KNOWN_HOSTS_PATH}" >> "$CONFIG_FILE"
 
-
-        # DEBUG
+        # DEBUG: print SSH key and known_hosts paths.
         echo "ZIPLOY_SSH_KEY_PATH: ${ZIPLOY_SSH_KEY_PATH}"
         echo "KNOWN_HOSTS_PATH: ${KNOWN_HOSTS_PATH}"
     fi
@@ -114,7 +114,7 @@ run_ziploy() {
         dest="ziploy-cli"
     fi
 
-
+    # DEBUG: print the destination path.
     echo "dest: ${dest}"
     
     # Download the CLI binary using curl.

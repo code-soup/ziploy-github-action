@@ -8,9 +8,6 @@ load_config() {
         # Remove any leading and trailing slashes from WORKING_DIRECTORY inline.
         STRIPPED_WORKING_DIRECTORY=$(echo "$ZIPLOY_WORKING_DIRECTORY" | sed 's|^/*||; s|/*$||')
         CONFIG_FILE="${STRIPPED_WORKING_DIRECTORY}/.ziployconfig"
-
-        # Prepend the working-directory key to the config file.
-        echo "working-directory = ${STRIPPED_WORKING_DIRECTORY}" >> "$CONFIG_FILE"
     else
         CONFIG_FILE=".ziployconfig"
     fi

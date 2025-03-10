@@ -75,7 +75,14 @@ setup_ssh_dir() {
 # Download and run the Ziploy CLI.
 run_ziploy() {
     url="https://raw.githubusercontent.com/code-soup/ziploy-cli/master/dist/x86_64/ziploy-cli"
-    dest="ziploy-cli"
+    
+    if [ -n "$WORKING_DIRECTORY" ]; then
+        # Strip any leading and trailing slashes from WORKING_DIRECTORY.
+        STRIPPED_WORKING_DIRECTORY=$(echo "$WORKING_DIRECTORY" | sed 's|^/*||; s|/*$||')
+        dest="${STRIPPED_WORKING_DIRECTORY}/ziploy-cli"
+    else
+        dest="ziploy-cli"
+    fi
     
     if ! curl -fsSL -o "${dest}" "${url}"; then
         echo "Error: Failed to download Ziploy CLI" >&2
@@ -83,8 +90,9 @@ run_ziploy() {
     fi
 
     chmod u+x "${dest}"
-    "./${dest}"
+    "${dest}"
 }
+
 
 
 # Execute the steps.

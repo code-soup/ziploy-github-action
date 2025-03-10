@@ -4,9 +4,9 @@
 # If WORKING_DIRECTORY is set, the script uses the .ziployconfig file within that directory
 # and prepends the "working-directory" key to the configuration file before loading it.
 load_config() {
-    if [ -n "$WORKING_DIRECTORY" ]; then
+    if [ -n "$ZIPLOY_WORKING_DIRECTORY" ]; then
         # Remove any leading and trailing slashes from WORKING_DIRECTORY inline.
-        STRIPPED_WORKING_DIRECTORY=$(echo "$WORKING_DIRECTORY" | sed 's|^/*||; s|/*$||')
+        STRIPPED_WORKING_DIRECTORY=$(echo "$ZIPLOY_WORKING_DIRECTORY" | sed 's|^/*||; s|/*$||')
         CONFIG_FILE="${STRIPPED_WORKING_DIRECTORY}/.ziployconfig"
 
         # Prepend the working-directory key to the config file.

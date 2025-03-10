@@ -93,8 +93,8 @@ setup_ssh_dir() {
         ssh-add "$ZIPLOY_SSH_KEY_PATH"
         
         # Append the SSH key and known_hosts file paths to the configuration file.
-        echo "ssh-key = ${ZIPLOY_SSH_KEY_PATH}" >> "$CONFIG_FILE"
-        echo "ssh-known-hosts = ${KNOWN_HOSTS_PATH}" >> "$CONFIG_FILE"
+        printf "\nssh-key = %s\n" "$ZIPLOY_SSH_KEY_PATH" >> "$CONFIG_FILE"
+        printf "\nssh-known-hosts = %s\n" "$KNOWN_HOSTS_PATH" >> "$CONFIG_FILE"
 
         # DEBUG: print SSH key and known_hosts paths.
         echo "ZIPLOY_SSH_KEY_PATH: ${ZIPLOY_SSH_KEY_PATH}"

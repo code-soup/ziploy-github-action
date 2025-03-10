@@ -104,18 +104,22 @@ setup_ssh_dir() {
 
 # Download and run the Ziploy CLI.
 run_ziploy() {
+
     url="https://raw.githubusercontent.com/code-soup/ziploy-cli/master/dist/test/ziploy-cli"
-    
-    # Determine the destination path for the downloaded CLI.
-    # Use ZIPLOY_WORKING_DIRECTORY (set via config) if available; otherwise, default to the root directory.
+    dest="ziploy-cli"
+
+    # If ZIPLOY_WORKING_DIRECTORY is set, change into that directory.
     if [ -n "$ZIPLOY_WORKING_DIRECTORY" ]; then
-        dest="${ZIPLOY_WORKING_DIRECTORY}/ziploy-cli"
-    else
-        dest="ziploy-cli"
+        cd "$ZIPLOY_WORKING_DIRECTORY" || { 
+            echo "Error: Failed to change directory to $ZIPLOY_WORKING_DIRECTORY" >&2 
+            return 1
+        }
     fi
 
-    # DEBUG: print the destination path.
-    echo "dest: ${dest}"
+    
+    # DEBUG: print current directory and destination file.
+    echo "Current directory: $(pwd)"
+    echo "Destination file: ${dest}"
     
     # Download the CLI binary using curl.
     if ! curl -fsSL -o "${dest}" "${url}"; then
@@ -125,9 +129,11 @@ run_ziploy() {
 
     # Make the downloaded binary executable.
     chmod u+x "${dest}"
+    
     # Execute the CLI binary.
-    "${dest}"
+    "./${dest}"
 }
+
 
 # Main execution: load configuration, setup SSH, and run the Ziploy CLI.
 load_config

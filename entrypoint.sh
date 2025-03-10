@@ -71,7 +71,7 @@ setup_ssh_dir() {
         # Define the file path for the SSH private key.
         ZIPLOY_SSH_KEY_PATH="${SSH_PATH}/ziploy_id_ed25519"
         # Write the SSH key to the file; remove any carriage returns (CR) for compatibility.
-        printf "%s\n" "$SSH_KEY" | sed 's/\r//g' > "$ZIPLOY_SSH_KEY_PATH"
+        printf "%s\n" "$ZIPLOY_SSH_KEY" | sed 's/\r//g' > "$ZIPLOY_SSH_KEY_PATH"
         chmod 600 "$ZIPLOY_SSH_KEY_PATH"
 
         # Verify that the SSH key file was successfully created and is not empty.

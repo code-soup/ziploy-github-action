@@ -20,6 +20,9 @@ load_config() {
         exit 1
     fi
 
+    # DEBUG
+    echo "CONFIG_FILE: ${CONFIG_FILE}"
+
     # Read and parse configuration file line by line.
     while IFS="=" read -r key value; do
         # Remove spaces from the key.
@@ -39,6 +42,18 @@ load_config() {
             working-directory) ZIPLOY_WORKING_DIRECTORY="$value" ;;
         esac
     done < "$CONFIG_FILE"
+
+
+    # DEBUG
+    echo "ZIPLOY_ID: ${ZIPLOY_ID}"
+    echo "ZIPLOY_ORIGIN: ${ZIPLOY_ORIGIN}"
+    echo "ZIPLOY_METHOD: ${ZIPLOY_METHOD}"
+    echo "ZIPLOY_SSH_HOST: ${ZIPLOY_SSH_HOST}"
+    echo "ZIPLOY_SSH_USER: ${ZIPLOY_SSH_USER}"
+    echo "ZIPLOY_SSH_PORT: ${ZIPLOY_SSH_PORT}"
+    echo "ZIPLOY_SSH_PORT: ${ZIPLOY_SSH_PORT}"
+    echo "ZIPLOY_VERBOSE: ${ZIPLOY_VERBOSE}"
+    echo "ZIPLOY_WORKING_DIRECTORY: ${ZIPLOY_WORKING_DIRECTORY}"
 }
 
 # Setup SSH directory by creating the .ssh folder, installing the provided key, and generating the known_hosts file.
@@ -49,6 +64,9 @@ setup_ssh_dir() {
         SSH_PATH="${HOME}/.ssh"
         mkdir -p "${SSH_PATH}"
         chmod 700 "${SSH_PATH}"
+
+        # DEBUG
+        echo "SSH_PATH: ${SSH_PATH}"
 
         # Define the file path for the SSH private key.
         ZIPLOY_SSH_KEY_PATH="${SSH_PATH}/ziploy_id_ed25519"
@@ -79,6 +97,11 @@ setup_ssh_dir() {
         # Append the SSH key and known_hosts file paths to the configuration file.
         echo "ssh-key = ${ZIPLOY_SSH_KEY_PATH}" >> "$CONFIG_FILE"
         echo "ssh-known-hosts = ${KNOWN_HOSTS_PATH}" >> "$CONFIG_FILE"
+
+
+        # DEBUG
+        echo "ZIPLOY_SSH_KEY_PATH: ${ZIPLOY_SSH_KEY_PATH}"
+        echo "KNOWN_HOSTS_PATH: ${KNOWN_HOSTS_PATH}"
     fi
 }
 
@@ -93,6 +116,9 @@ run_ziploy() {
     else
         dest="ziploy-cli"
     fi
+
+
+    echo "dest: ${dest}"
     
     # Download the CLI binary using curl.
     if ! curl -fsSL -o "${dest}" "${url}"; then

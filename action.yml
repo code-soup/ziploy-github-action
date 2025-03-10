@@ -11,7 +11,7 @@ inputs:
         description: "SSH Private Key"
         required: true
 
-    working-directory:
+    ziploy-working-directory:
         description: "Path to working directory if it's different from git root directory"
         required: false
 

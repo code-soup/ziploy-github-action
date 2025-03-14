@@ -1,6 +1,6 @@
 # Ziploy Github Action
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/code-soup/ziploy-github-action?style=flat-square)  
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/code-soup/ziploy-github-action?style=flat-square)
 ![License](https://img.shields.io/github/license/code-soup/ziploy-github-action?style=flat-square)
 
 Deploy WordPress Theme or Plugin from GitHub to any hosting using the [Ziploy WordPress plugin](https://www.ziploy.com) and the ziploy-github-action.

@@ -1,0 +1,26 @@
+# action.yml
+name: "Ziploy"
+description: "Deploy WordPress Theme or Plugin directly from GitHub to any hosting"
+
+branding:
+    icon: "archive"
+    color: "green"
+
+inputs:
+    ziploy-ssh-key:
+        description: "SSH Private Key"
+        required: true
+
+    ziploy-working-directory:
+        description: "Path to working directory if it's different from git root directory"
+        required: false
+
+runs:
+    using: "docker"
+    image: "Dockerfile"
+    env:
+        ZIPLOY_SSH_KEY: ${{ inputs.ziploy-ssh-key }}
+        ZIPLOY_WORKING_DIRECTORY: ${{ inputs.ziploy-working-directory }}
+    args:
+        - ${{ inputs.ziploy-ssh-key }}
+        - ${{ inputs.ziploy-working-directory }}

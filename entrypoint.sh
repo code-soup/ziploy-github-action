@@ -88,7 +88,7 @@ setup_ssh_dir() {
 # Download and run the Ziploy CLI.
 run_ziploy() {
 
-    url="https://raw.githubusercontent.com/code-soup/ziploy-cli/master/dist/ziploy-cli"
+    url="https://raw.githubusercontent.com/code-soup/ziploy-cli/master/dist/x86_64/ziploy-cli"
     dest="ziploy-cli"
 
     # If ZIPLOY_WORKING_DIRECTORY is set, change into that directory.

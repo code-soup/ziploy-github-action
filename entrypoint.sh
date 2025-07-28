@@ -42,7 +42,7 @@ load_config() {
 # Download and run the Ziploy CLI.
 run_ziploy() {
 
-    url="https://github.com/code-soup/ziploy-cli/tree/new/v2/dist/x86_64/ziploy-cli"
+    url="https://github.com/code-soup/ziploy-cli/raw/refs/heads/new/v2/dist/x86_64/ziploy-cli"
     dest="ziploy-cli"
 
     # If ZIPLOY_WORKING_DIRECTORY is set, change into that directory.
@@ -52,7 +52,7 @@ run_ziploy() {
             return 1
         }
     fi
-    
+
     # Download the CLI binary using curl.
     if ! curl -fsSL -o "${dest}" "${url}"; then
         echo "Error: Failed to download Ziploy CLI" >&2

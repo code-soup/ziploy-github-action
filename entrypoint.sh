@@ -78,12 +78,12 @@ run_ziploy() {
 
     # Add username if provided (from GitHub Actions)
     if [ -n "$ZIPLOY_WP_APP_USER" ]; then
-        CLI_ARGS="$CLI_ARGS --user $ZIPLOY_APP_USER"
+        CLI_ARGS="$CLI_ARGS --user=$ZIPLOY_APP_USER"
     fi
 
     # Add password if provided (from GitHub Actions)
     if [ -n "$ZIPLOY_WP_APP_PASS" ]; then
-        CLI_ARGS="$CLI_ARGS --password $ZIPLOY_APP_PASS"
+        CLI_ARGS="$CLI_ARGS --password=$ZIPLOY_APP_PASS"
     fi
 
     # Execute the CLI binary with arguments.

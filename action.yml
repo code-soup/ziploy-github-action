@@ -10,13 +10,13 @@ inputs:
     ziploy-username:
         description: "WP Application User name"
         required: true
-    
+
     ziploy-password:
         description: "WP Application User password"
         required: true
 
     ziploy-working-directory:
-        description: "Path to working directory if it's different from git root directory"
+        description: "Path to working directory if it's different from git root directory, eg: wp-content/themes/my-theme"
         required: false
 
 runs:
@@ -26,7 +26,3 @@ runs:
         ZIPLOY_WP_APP_USER: ${{ inputs.ziploy-username }}
         ZIPLOY_WP_APP_PASS: ${{ inputs.ziploy-password }}
         ZIPLOY_WORKING_DIRECTORY: ${{ inputs.ziploy-working-directory }}
-    args:
-        - ${{ inputs.ziploy-username }}
-        - ${{ inputs.ziploy-password }}
-        - ${{ inputs.ziploy-working-directory }}

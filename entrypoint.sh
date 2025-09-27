@@ -26,7 +26,7 @@ load_config() {
         key=$(echo "$key" | sed 's/ //g')
         # Trim leading and trailing whitespace from the value.
         value=$(echo "$value" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-        
+
         case "$key" in
             \#*|'') continue ;;  # Skip comments and empty lines.
             unique_id) ZIPLOY_ID="$value" ;;
@@ -37,6 +37,15 @@ load_config() {
             working-directory) ZIPLOY_WORKING_DIRECTORY="$value" ;;
         esac
     done < "$CONFIG_FILE"
+
+    # Override username and password if provided via GitHub Actions (they take precedence)
+    if [ -n "$ZIPLOY_WP_APP_USER" ]; then
+        ZIPLOY_APP_USER="$ZIPLOY_WP_APP_USER"
+    fi
+
+    if [ -n "$ZIPLOY_WP_APP_PASS" ]; then
+        ZIPLOY_APP_PASS="$ZIPLOY_WP_APP_PASS"
+    fi
 }
 
 # Download and run the Ziploy CLI.
@@ -64,8 +73,23 @@ run_ziploy() {
     
     echo "Deploying code. This can take few minutes, please wait."
 
-    # Execute the CLI binary.
-    stdbuf -oL "./${dest}"
+    # Build CLI arguments - only pass username and password as overrides
+    CLI_ARGS=""
+
+    # Add username if provided (from GitHub Actions)
+    if [ -n "$ZIPLOY_WP_APP_USER" ]; then
+        CLI_ARGS="$CLI_ARGS --user $ZIPLOY_APP_USER"
+    fi
+
+    # Add password if provided (from GitHub Actions)
+    if [ -n "$ZIPLOY_WP_APP_PASS" ]; then
+        CLI_ARGS="$CLI_ARGS --password $ZIPLOY_APP_PASS"
+    fi
+
+    # Execute the CLI binary with arguments.
+    # The CLI will read other settings from .ziployconfig file
+    echo "Running: ./${dest} $CLI_ARGS"
+    stdbuf -oL "./${dest}" $CLI_ARGS
 }
 
 

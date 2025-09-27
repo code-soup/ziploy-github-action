@@ -73,23 +73,24 @@ run_ziploy() {
     
     echo "Deploying code. This can take few minutes, please wait."
 
-    # Build CLI arguments - only pass username and password as overrides
-    CLI_ARGS=""
+    # Execute the CLI binary with arguments.
+    # The CLI will read other settings from .ziployconfig file
+
+    # Build arguments array to handle spaces properly
+    set --
 
     # Add username if provided (from GitHub Actions)
     if [ -n "$ZIPLOY_WP_APP_USER" ]; then
-        CLI_ARGS="$CLI_ARGS --user=$ZIPLOY_APP_USER"
+        set -- "$@" "--user=$ZIPLOY_WP_APP_USER"
     fi
 
     # Add password if provided (from GitHub Actions)
     if [ -n "$ZIPLOY_WP_APP_PASS" ]; then
-        CLI_ARGS="$CLI_ARGS --password=$ZIPLOY_APP_PASS"
+        set -- "$@" "--password=$ZIPLOY_WP_APP_PASS"
     fi
 
-    # Execute the CLI binary with arguments.
-    # The CLI will read other settings from .ziployconfig file
-    echo "Running: ./${dest} $CLI_ARGS"
-    stdbuf -oL "./${dest}" $CLI_ARGS
+    echo "Running: ./${dest} with ${#} arguments"
+    stdbuf -oL "./${dest}" "$@"
 }
 
 
